@@ -59,8 +59,6 @@ var moveItemDown = function(item) {
 
 };
 
-// createItem();
-// console.log("Moving item " + itemCount);
 var intervalReference = setInterval(moveItemDown, 3000);
 
 var checkforOverlap = function(item) {

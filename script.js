@@ -75,7 +75,7 @@ bin.style.left = "200px";
 gameContainer.appendChild(bin);
 
 var binImage = document.createElement('img');
-binImage.src = "img/recycleBin.png";
+binImage.src = "recycleBin.png";
 binImage.style.width = "100px";
 binImage.style.height = "100px";
 

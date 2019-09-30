@@ -19,9 +19,9 @@
 // Check if item is in the same column as the bin, if yes considered catch
 
 var lvlColumn = 5;
-// var itemArray = [];
-var gameColumnArray = [];
 
+// var itemArray = [];
+/*var gameColumnArray = [];*/
 
 // Create game container
 var gameContainer = document.createElement('div');
@@ -32,14 +32,12 @@ document.body.appendChild(gameContainer);
 // Create game column
 for(var i = 0; i < lvlColumn; i++) {
     gameColumn = document.createElement('div');
-    gameColumnArray.push(gameColumn);
+    /*gameColumnArray.push(gameColumn);*/
     gameColumn.classList.add('game-column');
     // gameColumn[i].innerHTML = "Column " + i;
     gameColumn.style.height = gameContainer.style.height;
     gameContainer.appendChild(gameColumn);
 
-
-    // gameColumn.appendChild(item);
 }
 
 var createItem = function() {
@@ -48,24 +46,7 @@ var createItem = function() {
     /*item.innerHTML = "Item " + j;*/
     item.style.height = "100px";
     item.style.top = "0px";
-
 };
-
-var appendToColumn = function() {
-
-    createItem();
-
-    var whichCol = document.querySelectorAll('.game-column');
-    var randomColNum = Math.floor(Math.random() * 5);
-
-    for(var i = 0; i < whichCol.length; i++) {
-
-        whichCol[randomColNum].appendChild(item);
-    }
-};
-
-var intervalReference = setInterval(appendToColumn, 1000);
-
 
 // Create bin
 var bin = document.createElement('div');
@@ -116,62 +97,54 @@ var checkForOverlap = function() {
         if(parseInt(item.style.top) > parseInt(gameContainer.style.height) ) {
 
             console.log("Item passes container!");
-            gameColumn.removeChild(item);
+            //gameColumn[randomColNum].removeChild(item);
             console.log("Child removed");
-            //clearInterval(intervalReference);
+            clearInterval(intervalReference);
         }
 
     } else {
         console.log("Overlapping!");
-        gameColumn.removeChild(item);
+        //gameColumn[randomColNum].removeChild(item);
         console.log("Child removed");
-        //clearInterval(intervalReference);
+        clearInterval(intervalReference);
     }
 };
 
+var moveDown = function() {
 
-var timeout = 500;
-var interval = 500;
+    var singleItemTop = parseInt(item.style.top);
 
-var moveDown = function(item) {
-    return function(){
-        var singleItemTop = parseInt(itemArray[i].style.top);
+    console.log("Current item is " + i + " Item top is " + singleItemTop);
 
-        console.log("Current item is " + i + " Item top is " + singleItemTop);
+    singleItemTop += 100;
 
-        singleItemTop += 10;
+    // Set final item style top
+    item.style.top = singleItemTop + "px";
 
-        // Set final item style top
-        itemArray[i].style.top = singleItemTop + "px";
-
-        console.log("Current item is " + i + " and timeout is " + timeout + " interval is " + interval);
-    }
+    checkForOverlap();
 
 };
 
-for(var i = 0; i < itemArray.length; i++) {
+var randomColNum;
 
-    timeout += 500;
-    setTimeout(moveDown(item), timeout);
-    setInterval(moveDown, 1500);
-}
+var appendToColumn = function() {
 
+    var selectGameColumn = document.querySelectorAll('.game-column');
 
-/*var intervalReference = setTimeout(moveDownItem0, 500);
-var intervalReference = setInterval(moveDownItem0, 500);
+    createItem();
 
-var intervalReference = setTimeout(moveDownItem1, 500);
-var intervalReference = setInterval(moveDownItem1, 1000);
+    randomColNum = Math.floor(Math.random() * 5);
+    console.log("Random Col Num" + randomColNum);
 
-var intervalReference = setTimeout(moveDownItem2, 500);
-var intervalReference = setInterval(moveDownItem2, 1500);
+    selectGameColumn[randomColNum].appendChild(item);
 
-var intervalReference = setTimeout(moveDownItem3, 500);
-var intervalReference = setInterval(moveDownItem3, 2000);
+    moveDown();
 
-var intervalReference = setTimeout(moveDownItem4, 500);
-var intervalReference = setInterval(moveDownItem4, 2500);*/
-//var intervalReference = setInterval(moveDown, 500);
+};
+
+var intervalReference = setInterval(moveDown, 1500);
+setTimeout(appendToColumn, 1000);
+
 
 var currentBinLeftPos = parseInt(bin.style.left);
 

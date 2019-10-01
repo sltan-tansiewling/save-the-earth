@@ -1,4 +1,3 @@
-// write your code below
 var gameColumn = document.createElement('div');
 gameColumn.classList.add('game-column');
 gameColumn.style.width = "500px";
@@ -8,6 +7,8 @@ document.body.appendChild(gameColumn);
 var itemImg = ["img/books.png", "img/cardboardBox.png", "img/newspaper.png", "img/paper.png", "img/paperBag.png", "img/earthBomb.png"];
 
 var itemCount = 0;
+var createItemTimeout;
+
 var createItem = function() {
 
   var item = document.createElement('div');
@@ -31,7 +32,8 @@ var createItem = function() {
   itemImage.setAttribute('height', '100px');
   item.appendChild(itemImage);
 
-  setTimeout(createItem, 5000);
+  createItemTimeout = setTimeout(createItem, 5000);
+  console.log("Create item timeout");
   return item;
 };
 
@@ -46,6 +48,9 @@ binImage.setAttribute('width', '100px');
 binImage.setAttribute('height', '100px');
 bin.appendChild(binImage);
 
+var moveItemTimeout;
+var moveItemInterval;
+
 var moveItemDown = function(item) {
 
   var item = document.querySelector('.item');
@@ -54,12 +59,12 @@ var moveItemDown = function(item) {
   convertedItemTopPos = convertedItemTopPos + 100;
   item.style.top = convertedItemTopPos + "px";
 
-  setTimeout(moveItemDown, 8000);
+  moveItemTimeout = setTimeout(moveItemDown, 1000);
+  console.log("Move item timeout");
+
   checkforOverlap();
 
 };
-
-var intervalReference = setInterval(moveItemDown, 3000);
 
 var checkforOverlap = function(item) {
   var item = document.querySelector('.item');
@@ -86,13 +91,13 @@ var checkforOverlap = function(item) {
       console.log(itemCount + "Overlapping!");
       gameColumn.removeChild(item);
       console.log("Child " + itemCount + " removed");
-      clearInterval(intervalReference);
+      clearInterval(moveItemInterval);
 
     } else if(overlap === false && parseInt(item.style.top) > parseInt(gameColumn.style.height)) {
             console.log(itemCount + "Not Overlapping!");
             gameColumn.removeChild(item);
             console.log("Child " + itemCount + " removed");
-            clearInterval(intervalReference);
+            clearInterval(moveItemInterval);
         }
 
 };
@@ -146,7 +151,41 @@ var moveSide = function(event) {
 // Add event listener to move baseline left and right
 document.addEventListener('keydown', moveSide);
 
+var startEndGame = function() {
+
+    if(btnStartEndGame.classList.contains('start')) {
+        // Start to create item
+        createItem();
+
+        // Update start game to end game
+        btnStartEndGame.classList.remove('start');
+        btnStartEndGame.classList.add('end');
+        btnStartEndGame.innerHTML = "End";
+
+        // Shift to here so that interval starts to run only after start button is clicked
+        moveItemInterval = setInterval(moveItemDown, 3000);
+        console.log("Move item interval");
+
+    } else {
+
+        // Clear timeout for create and move items
+        clearTimeout(createItemTimeout);
+        console.log("Create item timeout cleared!");
+
+        clearTimeout(moveItemTimeout);
+        console.log("Move item timeout cleared!");
+
+        // Clear interval for moving items
+        clearInterval(moveItemInterval);
+        console.log("Interval cleared!");
+
+        alert("You have ended the game.");
+
+    }
+
+};
+
 // Add event listener to button
-var startGame = document.querySelector('button');
-startGame.addEventListener('click', createItem);
+var btnStartEndGame = document.querySelector('button');
+btnStartEndGame.addEventListener('click', startEndGame);
 

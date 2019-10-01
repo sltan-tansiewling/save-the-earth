@@ -6,6 +6,16 @@ button {
     z-index: 1;
 }
 
+.start {
+    background-color: green;
+    color: white;
+}
+
+.end {
+    background-color: red;
+    color: white;
+}
+
 .game-column {
   border: 1px solid black;
   position: relative;

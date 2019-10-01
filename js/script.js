@@ -3,7 +3,7 @@ var gameColumn = document.createElement('div');
 gameColumn.classList.add('game-column');
 gameColumn.style.width = "500px";
 gameColumn.style.height = "800px";
-gameColumn.style.backgroundImage = "url('img/background-image.jpg')";
+gameColumn.style.backgroundImage = "url('img/background-image.png')";
 gameColumn.style.backgroundRepeat = "no-repeat";
 gameColumn.style.backgroundSize = "cover";
 document.body.appendChild(gameColumn);
@@ -18,11 +18,12 @@ gameColumn.appendChild(bin);
 var binImage = document.createElement('img');
 binImage.setAttribute('src', 'img/recycleBin.png');
 binImage.setAttribute('width', '100px');
-binImage.setAttribute('height', '100px');
+binImage.setAttribute('height', 'auto');
 bin.appendChild(binImage);
 
 // Create score
 var score = 0;
+/*var highestScore = 0;*/
 
 var scoreLoc = document.createElement('div');
 scoreLoc.classList.add('score');
@@ -30,7 +31,50 @@ scoreLoc.innerHTML = "Your Score: " + score;
 document.body.appendChild(scoreLoc);
 
 // Array of item images
-var itemImg = ["img/books.png", "img/cardboardBox.png", "img/newspaper.png", "img/paper.png", "img/paperBag.png", "img/earthBomb.png"];
+var recycleItems = [
+    {
+        name: "books",
+        src: "img/books.png",
+        recyclable: true,
+        score: 1
+    },
+    {
+        name: "cardboardBox",
+        src: "img/cardboardBox.png",
+        recyclable: true,
+        score: 1
+    },
+    {
+        name: "newspaper",
+        src: "img/newspaper.png",
+        recyclable: true,
+        score: 1
+    },
+    {
+        name: "paper",
+        src: "img/paper.png",
+        recyclable: true,
+        score: 1
+    },
+    {
+        name: "paperBag",
+        src: "img/paperBag.png",
+        recyclable: true,
+        score: 1
+    },
+    {
+        name: "earthBomb",
+        src: "img/earth-bomb.png",
+        recyclable: false,
+        score: 0
+    },
+    {
+        name: "styrofoamContainer",
+        src: "img/styrofoam-container.png",
+        recyclable: false,
+        score: 0
+    }
+];
 
 var itemCount = 0;
 
@@ -41,7 +85,7 @@ var createItem = function() {
 
     var randomTop = Math.floor(Math.random() * 50);
     var randomLeft = Math.floor(Math.random() * 400);
-    var randomImg = itemImg[Math.floor(Math.random()*itemImg.length)];
+    var randomImg = recycleItems[Math.floor(Math.random() * recycleItems.length)].src;
 
     itemCount += 1;
 
@@ -55,29 +99,29 @@ var createItem = function() {
     var itemImage = document.createElement('img');
     itemImage.setAttribute('src', randomImg);
     itemImage.setAttribute('width', '100px');
-    itemImage.setAttribute('height', '100px');
+    itemImage.setAttribute('height', 'auto');
     item.appendChild(itemImage);
 
-    moveItemDownInterval = setInterval(moveItemDown(item,moveItemDownInterval), 2000);
+    moveItemDownInterval = setInterval(moveItemDown(item, moveItemDownInterval), 2000);
 
     return item;
 };
 
 // Function to move item down
-var moveItemDown = function(item,ref) {
+var moveItemDown = function(item, ref) {
 
-    return function(){
+    return function() {
 
         convertedItemTopPos = parseInt(item.style.top);
         convertedItemTopPos = convertedItemTopPos + 100;
         item.style.top = convertedItemTopPos + "px";
 
-        checkforOverlap(item,ref);
+        checkforOverlap(item, ref);
     }
 };
 
 // Function to check for overlap
-var checkforOverlap = function(item,ref) {
+var checkforOverlap = function(item, ref) {
 
     var test = ref;
     var itemParams = item.getBoundingClientRect();
@@ -96,7 +140,7 @@ var checkforOverlap = function(item,ref) {
 
     var overlap = !(itemRight < binLeft || itemLeft > binRight || itemBottom < binTop || itemTop > binBottom);
 
-    if(overlap === true) {
+    if (overlap === true) {
 
         console.log(item.id + " Overlapping!");
         score = score + 1;
@@ -105,7 +149,7 @@ var checkforOverlap = function(item,ref) {
         console.log("Child " + item.id + " removed");
         clearInterval(test);
 
-    } else if(overlap === false && parseInt(item.style.top) > parseInt(gameColumn.style.height)) {
+    } else if (overlap === false && parseInt(item.style.top) > parseInt(gameColumn.style.height)) {
 
         console.log(item.id + " Not Overlapping!");
         gameColumn.removeChild(item);
@@ -136,26 +180,22 @@ function moveBinRight() {
 var moveSide = function(event) {
 
     // When user click left arrow
-    if(event.which === 37) {
+    if (event.which === 37) {
 
-        if(currentBinLeftPos === 0) {
+        if (currentBinLeftPos === 0) {
             console.log("You have reached the end");
-        }
-
-        else {
+        } else {
             moveBinLeft();
         }
 
     }
 
     // When user click right arrow
-    if(event.which === 39) {
+    if (event.which === 39) {
 
-        if(currentBinLeftPos === 400) {
+        if (currentBinLeftPos === 400) {
             console.log("You have reached the end");
-        }
-
-        else {
+        } else {
             moveBinRight();
         }
     }
@@ -169,7 +209,7 @@ var moveItemDownInterval;
 
 var startEndGame = function() {
 
-    if(btnStartEndGame.classList.contains('start')) {
+    if (btnStartEndGame.classList.contains('start')) {
         // Start to create item
         createItem();
         createItemInterval = setInterval(createItem, 5000);
@@ -180,6 +220,16 @@ var startEndGame = function() {
         btnStartEndGame.innerHTML = "End";
 
     } else {
+
+        /*if(score > highestScore) {
+            highestScore = score;
+            console.log("The highest score is " + highestScore);
+        }*/
+
+        // Update end game to start game
+        btnStartEndGame.classList.remove('end');
+        btnStartEndGame.classList.add('start');
+        btnStartEndGame.innerHTML = "Start";
 
         // Clear timeout for create and move items
         clearInterval(createItemInterval);

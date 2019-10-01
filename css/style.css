@@ -3,7 +3,6 @@ button {
     height: 50px;
     text-transform: uppercase;
     position: absolute;
-    z-index: 1;
 }
 
 .start {
@@ -17,20 +16,25 @@ button {
 }
 
 .game-column {
-  border: 1px solid black;
-  position: relative;
-  margin: 0 auto;
+    /*border: 1px solid black;*/
+    position: relative;
+    margin: 0 auto;
 }
 
 .item {
-  width: 100px;
-  height:100px;
-  position: absolute;
+    width: 100px;
+    height:100px;
+    position: absolute;
 }
 
 .bin {
-  width: 100px;
-  height:100px;
-  position: absolute;
-  bottom: 0;
+    width: 100px;
+    height:100px;
+    position: absolute;
+    bottom: 0;
+}
+
+.score {
+    position: absolute;
+    display: inline-block;
 }

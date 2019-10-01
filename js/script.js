@@ -1,109 +1,122 @@
+// Create game column
 var gameColumn = document.createElement('div');
 gameColumn.classList.add('game-column');
 gameColumn.style.width = "500px";
 gameColumn.style.height = "800px";
+gameColumn.style.backgroundImage = "url('img/background-image.jpg')";
+gameColumn.style.backgroundRepeat = "no-repeat";
+gameColumn.style.backgroundSize = "cover";
 document.body.appendChild(gameColumn);
 
-var itemImg = ["img/books.png", "img/cardboardBox.png", "img/newspaper.png", "img/paper.png", "img/paperBag.png", "img/earthBomb.png"];
-
-var itemCount = 0;
-var createItemTimeout;
-
-var createItem = function() {
-
-  var item = document.createElement('div');
-
-  var randomTop = Math.floor(Math.random() * 50);
-  var randomLeft = Math.floor(Math.random() * 400);
-  var randomImg = itemImg[Math.floor(Math.random()*itemImg.length)];
-
-  itemCount += 1;
-
-  item.classList.add('item');
-  item.style.top = randomTop + "px";
-  item.style.left = randomLeft + "px";
-  /*item.innerHTML = "Item " + itemCount;*/
-  console.log("Item count is " + itemCount);
-  gameColumn.appendChild(item);
-
-  var itemImage = document.createElement('img');
-  itemImage.setAttribute('src', randomImg);
-  itemImage.setAttribute('width', '100px');
-  itemImage.setAttribute('height', '100px');
-  item.appendChild(itemImage);
-
-  createItemTimeout = setTimeout(createItem, 5000);
-  console.log("Create item timeout");
-  return item;
-};
-
+// Create bin
 var bin = document.createElement('div');
 bin.classList.add('bin');
 bin.style.left = "200px";
 gameColumn.appendChild(bin);
 
+// Create bin image
 var binImage = document.createElement('img');
 binImage.setAttribute('src', 'img/recycleBin.png');
 binImage.setAttribute('width', '100px');
 binImage.setAttribute('height', '100px');
 bin.appendChild(binImage);
 
-var moveItemTimeout;
-var moveItemInterval;
+// Create score
+var score = 0;
 
-var moveItemDown = function(item) {
+var scoreLoc = document.createElement('div');
+scoreLoc.classList.add('score');
+scoreLoc.innerHTML = "Your Score: " + score;
+document.body.appendChild(scoreLoc);
 
-  var item = document.querySelector('.item');
+// Array of item images
+var itemImg = ["img/books.png", "img/cardboardBox.png", "img/newspaper.png", "img/paper.png", "img/paperBag.png", "img/earthBomb.png"];
 
-  convertedItemTopPos = parseInt(item.style.top);
-  convertedItemTopPos = convertedItemTopPos + 100;
-  item.style.top = convertedItemTopPos + "px";
+var itemCount = 0;
 
-  moveItemTimeout = setTimeout(moveItemDown, 1000);
-  console.log("Move item timeout");
+// Function to create item
+var createItem = function() {
 
-  checkforOverlap();
+    var item = document.createElement('div');
 
+    var randomTop = Math.floor(Math.random() * 50);
+    var randomLeft = Math.floor(Math.random() * 400);
+    var randomImg = itemImg[Math.floor(Math.random()*itemImg.length)];
+
+    itemCount += 1;
+
+    item.classList.add('item');
+    item.style.top = randomTop + "px";
+    item.style.left = randomLeft + "px";
+    item.id = itemCount;
+    // console.log("Item count is " + itemCount);
+    gameColumn.appendChild(item);
+
+    var itemImage = document.createElement('img');
+    itemImage.setAttribute('src', randomImg);
+    itemImage.setAttribute('width', '100px');
+    itemImage.setAttribute('height', '100px');
+    item.appendChild(itemImage);
+
+    moveItemDownInterval = setInterval(moveItemDown(item,moveItemDownInterval), 2000);
+
+    return item;
 };
 
-var checkforOverlap = function(item) {
-  var item = document.querySelector('.item');
-  var itemParams = item.getBoundingClientRect();
+// Function to move item down
+var moveItemDown = function(item,ref) {
 
-  itemTop = itemParams.top;
-  itemRight = itemParams.right;
-  itemBottom = itemParams.bottom;
-  itemLeft = itemParams.left;
+    return function(){
 
-  var binParams = bin.getBoundingClientRect();
+        convertedItemTopPos = parseInt(item.style.top);
+        convertedItemTopPos = convertedItemTopPos + 100;
+        item.style.top = convertedItemTopPos + "px";
 
-  binTop = binParams.top;
-  binRight = binParams.right;
-  binBottom = binParams.bottom;
-  binLeft = binParams.left;
+        checkforOverlap(item,ref);
+    }
+};
 
-  var overlap = !(itemRight < binLeft || itemLeft > binRight || itemBottom < binTop || itemTop > binBottom);
+// Function to check for overlap
+var checkforOverlap = function(item,ref) {
 
-  console.log(overlap);
+    var test = ref;
+    var itemParams = item.getBoundingClientRect();
 
-  if(overlap === true) {
+    itemTop = itemParams.top;
+    itemRight = itemParams.right;
+    itemBottom = itemParams.bottom;
+    itemLeft = itemParams.left;
 
-      console.log(itemCount + "Overlapping!");
-      gameColumn.removeChild(item);
-      console.log("Child " + itemCount + " removed");
-      clearInterval(moveItemInterval);
+    var binParams = bin.getBoundingClientRect();
+
+    binTop = binParams.top;
+    binRight = binParams.right;
+    binBottom = binParams.bottom;
+    binLeft = binParams.left;
+
+    var overlap = !(itemRight < binLeft || itemLeft > binRight || itemBottom < binTop || itemTop > binBottom);
+
+    if(overlap === true) {
+
+        console.log(item.id + " Overlapping!");
+        score = score + 1;
+        scoreLoc.innerHTML = "Your Score: " + score;
+        gameColumn.removeChild(item);
+        console.log("Child " + item.id + " removed");
+        clearInterval(test);
 
     } else if(overlap === false && parseInt(item.style.top) > parseInt(gameColumn.style.height)) {
-            console.log(itemCount + "Not Overlapping!");
-            gameColumn.removeChild(item);
-            console.log("Child " + itemCount + " removed");
-            clearInterval(moveItemInterval);
-        }
 
+        console.log(item.id + " Not Overlapping!");
+        gameColumn.removeChild(item);
+        console.log("Child " + item.id + " removed");
+        clearInterval(test);
+    }
 };
 
 var currentBinLeftPos = parseInt(bin.style.left);
 
+// Function to move bin left
 function moveBinLeft() {
 
     currentBinLeftPos = currentBinLeftPos - 100;
@@ -111,6 +124,7 @@ function moveBinLeft() {
 
 }
 
+// Function to move bin right
 function moveBinRight() {
 
     currentBinLeftPos = currentBinLeftPos + 100;
@@ -150,34 +164,29 @@ var moveSide = function(event) {
 
 // Add event listener to move baseline left and right
 document.addEventListener('keydown', moveSide);
+var createItemInterval;
+var moveItemDownInterval;
 
 var startEndGame = function() {
 
     if(btnStartEndGame.classList.contains('start')) {
         // Start to create item
         createItem();
+        createItemInterval = setInterval(createItem, 5000);
 
         // Update start game to end game
         btnStartEndGame.classList.remove('start');
         btnStartEndGame.classList.add('end');
         btnStartEndGame.innerHTML = "End";
 
-        // Shift to here so that interval starts to run only after start button is clicked
-        moveItemInterval = setInterval(moveItemDown, 3000);
-        console.log("Move item interval");
-
     } else {
 
         // Clear timeout for create and move items
-        clearTimeout(createItemTimeout);
-        console.log("Create item timeout cleared!");
+        clearInterval(createItemInterval);
+        console.log("Create item interval cleared!");
 
-        clearTimeout(moveItemTimeout);
-        console.log("Move item timeout cleared!");
-
-        // Clear interval for moving items
-        clearInterval(moveItemInterval);
-        console.log("Interval cleared!");
+        clearInterval(moveItemDownInterval);
+        console.log("Move item interval cleared!");
 
         alert("You have ended the game.");
 
@@ -188,4 +197,3 @@ var startEndGame = function() {
 // Add event listener to button
 var btnStartEndGame = document.querySelector('button');
 btnStartEndGame.addEventListener('click', startEndGame);
-

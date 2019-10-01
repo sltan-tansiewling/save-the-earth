@@ -2,23 +2,23 @@ button {
         width: 100px;
         height: 50px;
         text-transform: uppercase;
-        position: absolute;
+        position: relative;
 }
 
-.start {
-        background-color: green;
-        color: white;
+.game-container {
+        max-width: 800px;
+        position: relative;
+        margin: 0 auto;
 }
 
-.end {
-        background-color: red;
-        color: white;
+.game-container::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .game-column {
-        /*border: 1px solid black;*/
         position: relative;
-        margin: 0 auto;
 }
 
 .item {
@@ -34,7 +34,42 @@ button {
         bottom: 0;
 }
 
-.score {
-        position: absolute;
+.panel {
+        width: 300px;
+        height: 800px;
         display: inline-block;
+        float: right;
+        background-color: rgb(238,244,248);
+        position: relative;
+}
+
+.game-title {
+        text-align: center;
+}
+
+.btnStartEnd {
+        text-align: center;
+        padding-top: 20px;
+}
+
+.start {
+        background-color: green;
+        color: white;
+}
+
+.end {
+        background-color: red;
+        color: white;
+}
+
+.score {
+        position: relative;
+        display: inline-block;
+        width: 300px;
+        padding-left: 15px;
+}
+
+.info {
+        position: relative;
+        padding: 30px;
 }

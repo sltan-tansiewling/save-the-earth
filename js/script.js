@@ -6,7 +6,9 @@ gameColumn.style.height = "800px";
 gameColumn.style.backgroundImage = "url('img/background-image.png')";
 gameColumn.style.backgroundRepeat = "no-repeat";
 gameColumn.style.backgroundSize = "cover";
-document.body.appendChild(gameColumn);
+
+var gameContainer = document.querySelector('.game-container');
+gameContainer.appendChild(gameColumn);
 
 // Create bin
 var bin = document.createElement('div');
@@ -23,12 +25,13 @@ bin.appendChild(binImage);
 
 // Create score
 var score = 0;
-/*var highestScore = 0;*/
 
-var scoreLoc = document.createElement('div');
+var scoreLoc = document.createElement('h2');
 scoreLoc.classList.add('score');
-scoreLoc.innerHTML = "Your Score: " + score;
-document.body.appendChild(scoreLoc);
+scoreLoc.innerHTML = "Score: " + score;
+
+var panelScore = document.querySelector('.score');
+panelScore.appendChild(scoreLoc);
 
 // Array of item images
 var recycleItems = [
@@ -86,6 +89,10 @@ var createItem = function() {
     var randomTop = Math.floor(Math.random() * 50);
     var randomLeft = Math.floor(Math.random() * 400);
     var randomImg = recycleItems[Math.floor(Math.random() * recycleItems.length)].src;
+    console.log(randomImg);
+
+    var currentImg = recycleItems["randomImg"];
+    console.log(currentImg);
 
     itemCount += 1;
 
@@ -102,7 +109,7 @@ var createItem = function() {
     itemImage.setAttribute('height', 'auto');
     item.appendChild(itemImage);
 
-    moveItemDownInterval = setInterval(moveItemDown(item, moveItemDownInterval), 2000);
+    moveItemDownInterval = setInterval(moveItemDown(item, moveItemDownInterval), 1000);
 
     return item;
 };
@@ -118,6 +125,12 @@ var moveItemDown = function(item, ref) {
 
         checkforOverlap(item, ref);
     }
+};
+
+// Function to track score
+var trackScore = function() {
+    var yourScore = 0;
+
 };
 
 // Function to check for overlap
